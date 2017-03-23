@@ -14,26 +14,29 @@ pygame.font.init()
 myfont = pygame.font.SysFont('Arial', 60)
 winningtext = "Winner is: "
 
+clock = pygame.time.Clock()
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             print("Exiting program...")
             sys.exit()
 
+    quit = pygame.key.get_pressed()[pygame.K_ESCAPE]
+    if quit:
+        sys.exit()
 
     if game_in_progress:
         # Process Player Input
         right = pygame.key.get_pressed()[pygame.K_RIGHT]
         left= pygame.key.get_pressed()[pygame.K_LEFT]
-        quit= pygame.key.get_pressed()[pygame.K_ESCAPE]
+
 
         # Updating Game State Logic
         if right:
-            p1Rect.x += 5
+            p1Rect.x += 10
         if left:
-            p2Rect.x += 5
-        if quit:
-            pygame.quit()
+            p2Rect.x += 10
 
         # RENDERING
         screen.fill((0,0,0))
@@ -53,3 +56,4 @@ while True:
             game_in_progress = False
 
         pygame.display.flip()
+    clock.tick(60)
