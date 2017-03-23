@@ -1,6 +1,6 @@
 import sys, pygame, platform
 
-print platform.python_version()
+print(platform.python_version())
 
 screen = pygame.display.set_mode((800,600))
 
