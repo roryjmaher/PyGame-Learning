@@ -1,5 +1,6 @@
 import sys, pygame
-
+import platform
+print (platform.python_version())
 screen = pygame.display.set_mode((800,600))
 
 p1Rect = pygame.Rect((50, 400, 50,50))
