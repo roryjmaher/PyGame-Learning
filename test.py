@@ -1,7 +1,8 @@
 import sys, pygame
-import platform
-print (platform.python_version())
+
 screen = pygame.display.set_mode((800,600))
+
+p1Image = pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_1.png')
 
 p1Rect = pygame.Rect((50, 400, 50,50))
 p2Rect = pygame.Rect((50, 500, 50,50))
@@ -54,7 +55,8 @@ while True:
             textsurface = myfont.render(winningtext, False, (0, 255, 0))
             screen.blit(textsurface,(400,300))
 
-            game_in_progress = False
 
+            game_in_progress = False
+        screen.blit(p1Image, (250, 250))
         pygame.display.flip()
     clock.tick(60)
