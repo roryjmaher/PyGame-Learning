@@ -3,6 +3,17 @@
 # Scale resize in paint vs ingame
 import sys
 import pygame
+from enum import Enum
+
+
+class Color(Enum):
+    NONE = 1
+    LEFT = 2
+    RIGHT = 3
+
+# something to store movement
+last_input = Color.NONE
+current_input = Color.NONE
 
 
 #
@@ -46,10 +57,32 @@ game_in_progress = True
 clock = pygame.time.Clock()
 x = 50
 while True:
+    #re/set all keyboard movement bools
+    left_down = False
+    right_down = False
+    left_up = False
+    right_up = False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             print("Exiting program...")
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                left_down = True
+            elif event.key == pygame.K_RIGHT:
+                right_down = True
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                left_up = True
+            elif event.key == pygame.K_RIGHT:
+                right_up = True
+
+    # check for the current input
+    # check for the previous input
+    # if last and current work together then increase velocity
+    # otherwise stagnate or decrease velocity depending
+    # if no input then dcrease velocity to (possbly to 0)
 
     # Process Player Input
     right = pygame.key.get_pressed()[pygame.K_RIGHT]
