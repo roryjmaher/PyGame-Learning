@@ -6,14 +6,16 @@ import pygame
 from enum import Enum
 
 
-class Color(Enum):
+class Input(Enum):
     NONE = 1
-    LEFT = 2
-    RIGHT = 3
+    LEFT_DOWN = 2
+    RIGHT_DOWN = 3
+    LEFT_UP = 4
+    RIGHT_UP = 5
 
 # something to store movement
-last_input = Color.NONE
-current_input = Color.NONE
+last_input = Input.NONE
+current_input = Input.NONE
 
 
 #
@@ -26,26 +28,17 @@ def apply_image_scaling_to_list(scaling_function, images):
 screen = pygame.display.set_mode((800,600))
 
 imagesBear = []
-imagesCat = []
 imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_17.png'))
 imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_18.png'))
 imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_19.png'))
 imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_20.png'))
 imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_21.png'))
 imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_22.png'))
-imagesCat.append(pygame.image.load('./Assets/Images/Cat/Cat Frames/Cat_17.png'))
-imagesCat.append(pygame.image.load('./Assets/Images/Cat/Cat Frames/Cat_18.png'))
-imagesCat.append(pygame.image.load('./Assets/Images/Cat/Cat Frames/Cat_19.png'))
-imagesCat.append(pygame.image.load('./Assets/Images/Cat/Cat Frames/Cat_20.png'))
-imagesCat.append(pygame.image.load('./Assets/Images/Cat/Cat Frames/Cat_21.png'))
-imagesCat.append(pygame.image.load('./Assets/Images/Cat/Cat Frames/Cat_22.png'))
 
 # scale all the images
-scaledCatImages = apply_image_scaling_to_list(pygame.transform.scale2x, imagesCat)
-scaledFoxImages = apply_image_scaling_to_list(pygame.transform.scale2x, imagesBear)
+scaledBearImages = apply_image_scaling_to_list(pygame.transform.scale2x, imagesBear)
 
 current_bear_image = 0
-current_cat_image = 0
 WHITE = (255,255,255)
 
 # scale an image testing
@@ -55,29 +48,39 @@ WHITE = (255,255,255)
 
 game_in_progress = True
 clock = pygame.time.Clock()
-x = 50
+STARTING_X = 50
+x = 1
+velocity = 1
+have_key_up = False
 while True:
     #re/set all keyboard movement bools
-    left_down = False
-    right_down = False
-    left_up = False
-    right_up = False
+    have_key_up = False
 
     for event in pygame.event.get():
+        print (event)
         if event.type == pygame.QUIT:
             print("Exiting program...")
             sys.exit()
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYUP:
+            have_key_up = True
             if event.key == pygame.K_LEFT:
-                left_down = True
+                print ("UP L")
+                if last_input == Input.RIGHT_UP:
+                    velocity += 1
+                #elif last_input == Input.NONE:
+                #    velocity += 1
+                else:
+                    velocity -= 1
+                last_input = Input.LEFT_UP
             elif event.key == pygame.K_RIGHT:
-                right_down = True
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                left_up = True
-            elif event.key == pygame.K_RIGHT:
-                right_up = True
-
+                print ("UP R")
+                if last_input == Input.LEFT_UP:
+                    velocity += 1
+                #elif last_input == Input.NONE:
+                #    velocity += 1
+                else:
+                    velocity -= 1
+                last_input = Input.RIGHT_UP
     # check for the current input
     # check for the previous input
     # if last and current work together then increase velocity
@@ -85,27 +88,33 @@ while True:
     # if no input then dcrease velocity to (possbly to 0)
 
     # Process Player Input
-    right = pygame.key.get_pressed()[pygame.K_RIGHT]
-    left = pygame.key.get_pressed()[pygame.K_LEFT]
+    #right = pygame.key.get_pressed()[pygame.K_RIGHT]
+    #left = pygame.key.get_pressed()[pygame.K_LEFT]
+    print(velocity)
+    if (velocity > 5):
+        velocity = 5
+    if (velocity < 0):
+        velocity = 0
 
-    if right:
-        x += 2
+
+    if (velocity > 0):
         current_bear_image += 1
         if current_bear_image >= len(imagesBear):
             current_bear_image = 0
 
-    current_cat_image += 1
-    if current_cat_image >= len(imagesCat):
-        current_cat_image = 0
+    # current_cat_image += 1
+    # if current_cat_image >= len(imagesCat):
+    #     current_cat_image = 0
 
+    # THIS IS THE PROBLEM
+    if have_key_up:
+        x += x * velocity
+
+    print ('x pos %s' % (x))
+    #x *= velocity
     # RENDERING
     screen.fill(WHITE)
-    #screen.blit(imagesBear[current_bear_image], (x, 250))
-    #screen.blit(imagesCat[current_cat_image], (50, 300))
-    screen.blit(scaledCatImages[current_bear_image], (x, 250))
-    screen.blit(scaledFoxImages[current_cat_image], (50, 300))
-    #screen.blit(scaled_fox_image, (300, 200))
-    #screen.blit(scale2x_fox_image, (300, 400))
+    screen.blit(scaledBearImages[current_bear_image], (STARTING_X + x, 250))
     pygame.display.update()
     clock.tick(10) # 60 -> 60 fps
 
