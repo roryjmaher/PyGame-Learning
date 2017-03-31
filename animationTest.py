@@ -42,12 +42,17 @@ current_bear_image = 0
 WHITE = (255,255,255)
 game_in_progress = True
 clock = pygame.time.Clock()
+total_time = 0.0
+time_tracker = 0.0
 STARTING_X = 50
 current_position = 0
-velocity = 1
+speed_per_second = 1
 have_p1_key_up = False
-
+tick = 0
+FPS = 60
 while True:
+
+    tick += 1
     #re/set all keyboard movement bools
     have_p1_key_up = False
 
@@ -61,37 +66,54 @@ while True:
             have_p1_key_up = True
             if event.key == pygame.K_LEFT:
                 if last_input == Input.RIGHT_UP:
-                    velocity += 1
+                    speed_per_second += 3
                 last_input = Input.LEFT_UP
             elif event.key == pygame.K_RIGHT:
                 if last_input == Input.LEFT_UP:
-                    velocity += 1
+                    speed_per_second += 3
                 last_input = Input.RIGHT_UP
 
     # no key press so slow down
     if not have_p1_key_up:
-        velocity -= 1
+        speed_per_second -= .5
 
     # Keep velocity in check
-    if velocity > 15:
-        velocity = 15
-    if velocity < 0:
-        velocity = 0
+    if speed_per_second > 15:
+        speed_per_second = 15
+    if speed_per_second < 0:
+        speed_per_second = 0
+
+    # clock calculations
+    # time_passed = clock.tick()
+    # time_passed_seconds = time_passed / 1000.0
+    # time_tracker += time_passed
+    # print (time_tracker)
+
+    # add velocity for this clock tick to current X position
+    current_position += speed_per_second / 2
+
+    if tick >= FPS:
+        print ("1 Second: %s" % time_tracker)
 
     # if we moved at all then get next sprite frame
-    if velocity > 0:
+    #if speed_per_second > 0:
+    if tick % 3 == 0 and speed_per_second > 0:
         current_bear_image += 1
         if current_bear_image >= len(imagesBear):
             current_bear_image = 0
 
-    # add velocity for this clock tick to current X position
-    current_position += velocity
 
     # RENDERING
     screen.fill(WHITE)
+
     screen.blit(scaled_bear_images[current_bear_image], (STARTING_X + current_position, 250))
+
     pygame.display.update()
-    clock.tick(10) # 60 -> 60 fps
+
+    #print (tick)
+    if tick >= FPS:
+        tick = 0
+    clock.tick(FPS) # 60 -> 60 fps
 
 
 '''Animation
