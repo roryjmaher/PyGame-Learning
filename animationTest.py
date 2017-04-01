@@ -1,3 +1,4 @@
+# TODO : Add a player Class. Include Images, Name, Position so we can sort list of players at end results.
 # TODO : Add win condition. Add end line.
 # TODO : Starting image of character standing. Winning image ?
 # TODO : Add Game Timer to show player score/time.
@@ -16,8 +17,8 @@ import os
 # enum for input detection
 class Input(Enum):
     NONE = 1
-    LEFT = 4
-    RIGHT = 5
+    LEFT = 2
+    RIGHT = 3
 
 def setup_player_images(path):
     scaled_images = []
@@ -25,7 +26,6 @@ def setup_player_images(path):
     for image_string in p1SpriteList:
         scaled_images.append(pygame.transform.scale2x(pygame.image.load(path + '/' + image_string)))
     return scaled_images
-
 
 # something to store movement
 last_input_p1 = Input.NONE
@@ -67,8 +67,11 @@ FPS = 60
 # pixel spped ups and slowdown
 PIXEL_PER_TICK = 3
 PIXEL_SLOWDOWN = .5
-while True:
 
+have_winner = False
+
+# main game loop
+while not have_winner:
     tick += 1
 
     # reset all keyboard movement booleans
@@ -153,22 +156,38 @@ while True:
     screen.fill(WHITE)
 
     # TODO: see if we have a winner. See who actually won.
+    if (current_position_p1 >= (WINDOW_WIDTH - 100)):
+        have_winner = True
+    elif (current_position_p2 >= (WINDOW_WIDTH - 100)):
+        have_winner = True
 
     # display new positions
     screen.blit(player_one_images[current_p1_image], (STARTING_X + current_position_p1, 250))
     screen.blit(player_two_images[current_p2_image], (STARTING_X + current_position_p2, 450))
     print ("%s : %s" % (current_position_p1,current_position_p2))
-
-
     pygame.display.update()
-
-
 
     #print (tick)
     if tick >= FPS:
         tick = 0
     clock.tick(FPS) # 60 -> 60 fps
 
+# game is over
+while have_winner:
+    winning_image = pygame.image.load('./Assets/Images/Other/Winner-PNG-Image.png')
+    screen.blit(winning_image, (0, 0))
+    pygame.display.update()
+    clock.tick(30)  # 60 -> 60 fps
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            print("Exiting program...")
+            sys.exit()
+
+        # have a look see if a player one released correct key
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_ESCAPE:
+                print("Exiting program...from ESC Input")
+                sys.exit()
 
 '''Animation
 Name - Frames - Recommended FPS - Note
