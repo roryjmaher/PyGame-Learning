@@ -76,6 +76,7 @@ race_countdown = 5
 pygame.font.init()
 countdown_font = pygame.font.SysFont('Arial', 60)
 ticks = 0
+
 # starting line
 while not race_started:
     for event in pygame.event.get():
@@ -111,6 +112,10 @@ while not race_started:
 # main game loop
 print ("STARTING RACE")
 ticks = 0
+go_text = "GO"
+
+start_font = pygame.font.SysFont('Arial', 80)
+
 while not have_winner:
     ticks += 1
 
@@ -148,8 +153,8 @@ while not have_winner:
                 if last_input_p2 == Input.LEFT:
                     speed_per_second_p2 += PIXEL_PER_TICK
                 last_input_p2 = Input.RIGHT
+                #print ("Speed_per_second : %s : %s" % (speed_per_second_p1, speed_per_second_p2))
 
-    #print ("Speed_per_second : %s : %s" % (speed_per_second_p1, speed_per_second_p2))
     # no key press so slow down
     if not have_p1_key_up:
         speed_per_second_p1 -= PIXEL_SLOWDOWN
@@ -195,6 +200,9 @@ while not have_winner:
     # RENDERING
     screen.fill(WHITE)
 
+    text_surface = countdown_font.render(go_text, False, (0, 0, 0))
+    screen.blit(text_surface, (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+
     # TODO: see if we have a winner. See who actually won.
     if current_position_p1 >= (WINDOW_WIDTH - 100):
         have_winner = True
@@ -212,6 +220,8 @@ while not have_winner:
     #print (tick)
     if ticks >= FPS:
         ticks = 0
+        go_text = ""
+
     clock.tick(FPS) # 60 -> 60 fps
 
 # game is over
