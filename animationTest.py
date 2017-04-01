@@ -1,87 +1,128 @@
-# TODO : rename vars to P1. Add P2. Improve Timing. Add win condition. Add end line.
+# TODO : Add win condition. Add end line.
+# TODO : Starting image of character standing. Winning image ?
 # TODO : Add Game Timer to show player score/time.
 # TODO : Add AI with levels.
+# TODO : Allow Start with Left OR Right when Speed = NONE
+# TODO : Re-factor and allow 4 players
+# TODO : Allow Handicap/Stamina.
+# TODO : Pick a character. Character Player stats. Top Speed/Stamina.
+# TODO : Improve Timing.
 
 import sys
 import pygame
 from enum import Enum
+import os
 
 # enum for input detection
 class Input(Enum):
     NONE = 1
-    LEFT_DOWN = 2
-    RIGHT_DOWN = 3
-    LEFT_UP = 4
-    RIGHT_UP = 5
+    LEFT = 4
+    RIGHT = 5
+
+def setup_player_images(path):
+    scaled_images = []
+    p1SpriteList = os.listdir(path)
+    for image_string in p1SpriteList:
+        scaled_images.append(pygame.transform.scale2x(pygame.image.load(path + '/' + image_string)))
+    return scaled_images
+
 
 # something to store movement
-last_input = Input.NONE
-p2_last_input = Input.NONE
+last_input_p1 = Input.NONE
+last_input_p2 = Input.NONE
 
+#load the player images
+player_one_images = setup_player_images('./Assets/Images/Brown Bear/Brown Bear Frames/Running')
+player_two_images = setup_player_images('./Assets/Images/Cat/Cat Frames/Running')
 
-# set teh screen size
-screen = pygame.display.set_mode((800,600))
+# set the screen size
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 600
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (50,50)
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
-# load all images
-imagesBear = []
-imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_17.png'))
-imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_18.png'))
-imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_19.png'))
-imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_20.png'))
-imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_21.png'))
-imagesBear.append(pygame.image.load('./Assets/Images/Brown Bear/Brown Bear Frames/Brown Bear_22.png'))
-
-# scale all the images
-scaled_bear_images = []
-for image in imagesBear:
-    scaled_bear_images.append(pygame.transform.scale2x(image))
 
 # Set-Up
 # set starting frames
-current_bear_image = 0
+current_p1_image = 0
+current_p2_image = 0
+current_position_p1 = 0
+current_position_p2 = 0
+
 WHITE = (255,255,255)
-game_in_progress = True
 clock = pygame.time.Clock()
 total_time = 0.0
 time_tracker = 0.0
 STARTING_X = 50
-current_position = 0
-speed_per_second = 1
+
+
+speed_per_second_p1 = 1
 have_p1_key_up = False
+speed_per_second_p2 = 1
+have_p2_key_up = False
+
 tick = 0
 FPS = 60
+
+# pixel spped ups and slowdown
+PIXEL_PER_TICK = 3
+PIXEL_SLOWDOWN = .5
 while True:
 
     tick += 1
-    #re/set all keyboard movement bools
+
+    # reset all keyboard movement booleans
     have_p1_key_up = False
+    have_p2_key_up = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             print("Exiting program...")
             sys.exit()
 
-        # have a look see if player pressed the up key
+        # have a look see if a player one released correct key
         if event.type == pygame.KEYUP:
-            have_p1_key_up = True
+            # Player 1 - LEFT/RIGHT
             if event.key == pygame.K_LEFT:
-                if last_input == Input.RIGHT_UP:
-                    speed_per_second += 3
-                last_input = Input.LEFT_UP
+                have_p1_key_up = True
+                if last_input_p1 == Input.RIGHT:
+                    speed_per_second_p1 += PIXEL_PER_TICK
+                last_input_p1 = Input.LEFT
             elif event.key == pygame.K_RIGHT:
-                if last_input == Input.LEFT_UP:
-                    speed_per_second += 3
-                last_input = Input.RIGHT_UP
+                have_p1_key_up = True
+                if last_input_p1 == Input.LEFT:
+                    speed_per_second_p1 += PIXEL_PER_TICK
+                last_input_p1 = Input.RIGHT
 
+            # Player 2 - A/D
+            if event.key == pygame.K_a:
+                have_p2_key_up = True
+                if last_input_p2 == Input.RIGHT:
+                    speed_per_second_p2 += PIXEL_PER_TICK
+                last_input_p2 = Input.LEFT
+            elif event.key == pygame.K_d:
+                have_p2_key_up = True
+                if last_input_p2 == Input.LEFT:
+                    speed_per_second_p2 += PIXEL_PER_TICK
+                last_input_p2 = Input.RIGHT
+
+    print ("Speed_per_second : %s : %s" % (speed_per_second_p1, speed_per_second_p2))
     # no key press so slow down
     if not have_p1_key_up:
-        speed_per_second -= .5
+        speed_per_second_p1 -= PIXEL_SLOWDOWN
+    if not have_p2_key_up:
+        speed_per_second_p2 -= PIXEL_SLOWDOWN
 
     # Keep velocity in check
-    if speed_per_second > 15:
-        speed_per_second = 15
-    if speed_per_second < 0:
-        speed_per_second = 0
+    if speed_per_second_p1 > 15:
+        speed_per_second_p1 = 15
+    if speed_per_second_p1 < 0:
+        speed_per_second_p1 = 0
+
+    if speed_per_second_p2 > 15:
+        speed_per_second_p2 = 15
+    if speed_per_second_p2 < 0:
+        speed_per_second_p2 = 0
 
     # clock calculations
     # time_passed = clock.tick()
@@ -90,25 +131,38 @@ while True:
     # print (time_tracker)
 
     # add velocity for this clock tick to current X position
-    current_position += speed_per_second / 2
+    current_position_p1 += speed_per_second_p1 / 2
+    current_position_p2 += speed_per_second_p2 / 2
 
     if tick >= FPS:
         print ("1 Second: %s" % time_tracker)
 
     # if we moved at all then get next sprite frame
     #if speed_per_second > 0:
-    if tick % 3 == 0 and speed_per_second > 0:
-        current_bear_image += 1
-        if current_bear_image >= len(imagesBear):
-            current_bear_image = 0
-
+    if tick % 3 == 0:
+        if speed_per_second_p1 > 0:
+            current_p1_image += 1
+            if current_p1_image >= len(player_one_images):
+                current_p1_image = 0
+        if speed_per_second_p2 > 0:
+            current_p2_image += 1
+            if current_p2_image >= len(player_two_images):
+                current_p2_image = 0
 
     # RENDERING
     screen.fill(WHITE)
 
-    screen.blit(scaled_bear_images[current_bear_image], (STARTING_X + current_position, 250))
+    # TODO: see if we have a winner. See who actually won.
+
+    # display new positions
+    screen.blit(player_one_images[current_p1_image], (STARTING_X + current_position_p1, 250))
+    screen.blit(player_two_images[current_p2_image], (STARTING_X + current_position_p2, 450))
+    print ("%s : %s" % (current_position_p1,current_position_p2))
+
 
     pygame.display.update()
+
+
 
     #print (tick)
     if tick >= FPS:
