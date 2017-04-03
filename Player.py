@@ -1,16 +1,19 @@
-from enum import Enum
+from Input import Input
 
 
 class Player(object):
     """
     """
 
-    def __init__(self, is_ai, player_number, base_speed, current_position, running_images, walking_images,
+    def __init__(self, is_ai, ai_skill, player_number, base_speed, current_position, running_images, walking_images,
                  standing_images, x_coordinate):
-        self.is_ai = False
+        self.is_ai = is_ai
+        self.ai_skill = ai_skill
+        self.is_taking_part = False
         self.player_number = player_number
         self.current_position = current_position
         self.base_speed = base_speed
+        self.velocity = 1
         self.running_images = running_images
         self.walking_images = walking_images
         self.standing_images = standing_images
@@ -26,8 +29,13 @@ class Player(object):
         if self.current_standing_image >= len(self.standing_images):
             self.current_standing_image = 0
 
-# enum for input detection
-class Input(Enum):
-    NONE = 1
-    LEFT = 2
-    RIGHT = 3
+    " gets the next x position of the player based on the current x_coordinate and the velocity "
+    def get_new_position(self):
+        # do some calculations
+        print (self.x_coordinate)
+
+    " take an input and update the velocity depending on previous inputs "
+    def update_velocity(self, input):
+        print (input)
+        if self.is_ai:
+            print ("AI: Auto calculate based on ai skill")

@@ -15,15 +15,58 @@ import sys
 import pygame
 
 from Player import Player
-from Player import Input
+from Input import Input
 
 
-def setup_player_images(path):
+def load_images_from_directory(path):
     scaled_images = []
     p1SpriteList = os.listdir(path)
     for image_string in p1SpriteList:
         scaled_images.append(pygame.transform.scale2x(pygame.image.load(path + '/' + image_string)))
     return scaled_images
+
+
+def starting_line():
+    load_images_from_directory('./Assets/Images/Other/Countdown')
+    race_countdown = 5
+    race_started = False
+    ticks = 0
+    pygame.font.init()
+    countdown_font = pygame.font.SysFont('Arial', 60)
+
+    # starting line
+    while not race_started:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                print("Exiting program...")
+                sys.exit()
+
+        # RENDERING
+        screen.fill(WHITE)
+        screen.blit(player_one.standing_images[player_one.current_standing_image],
+                    (player_one.x_coordinate + current_position_p1, 250))
+
+        screen.blit(player_two.standing_images[player_two.current_standing_image],
+                    (player_two.x_coordinate + current_position_p2, 450))
+        player_one.next_standing_image()
+        player_two.next_standing_image()
+
+        if ticks % 10 == 0:
+            print (race_countdown)
+            race_countdown -= 1
+
+        ticks -= 1
+        if race_countdown < 0:
+            race_started = True
+
+        clock.tick(10)
+
+        if race_countdown > 0:
+            text_surface = countdown_font.render(str(race_countdown), False, (0, 0, 0))
+        screen.blit(text_surface, (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
+        pygame.display.update()
+
+# MAIN
 
 # something to store movement
 last_input_p1 = Input.NONE
@@ -31,13 +74,15 @@ last_input_p2 = Input.NONE
 STARTING_X = 50
 
 # Setup the players
-player_one = Player(False, 1, 1, 0, setup_player_images('./Assets/Images/Brown Bear/Brown Bear Frames/Running'),
-                    setup_player_images('./Assets/Images/Brown Bear/Brown Bear Frames/Walking'),
-                    setup_player_images('./Assets/Images/Brown Bear/Brown Bear Frames/Standing'),
+player_one = Player(False, 100, 1, 1, 0,
+                    load_images_from_directory('./Assets/Images/Brown Bear/Brown Bear Frames/Running'),
+                    load_images_from_directory('./Assets/Images/Brown Bear/Brown Bear Frames/Walking'),
+                    load_images_from_directory('./Assets/Images/Brown Bear/Brown Bear Frames/Standing'),
                     STARTING_X)
-player_two = Player(False, 2, 1, 0, setup_player_images('./Assets/Images/Cat/Cat Frames/Running'),
-                    setup_player_images('./Assets/Images/Cat/Cat Frames/Walking'),
-                    setup_player_images('./Assets/Images/Cat/Cat Frames/Standing'),
+player_two = Player(False, 100, 2, 1, 0,
+                    load_images_from_directory('./Assets/Images/Cat/Cat Frames/Running'),
+                    load_images_from_directory('./Assets/Images/Cat/Cat Frames/Walking'),
+                    load_images_from_directory('./Assets/Images/Cat/Cat Frames/Standing'),
                     STARTING_X)
 
 # set the screen size
@@ -71,50 +116,21 @@ PIXEL_PER_TICK = 3
 PIXEL_SLOWDOWN = .5
 race_started = False
 have_winner = False
-race_countdown = 5
 
-pygame.font.init()
-countdown_font = pygame.font.SysFont('Arial', 60)
+
 ticks = 0
 
-# starting line
-while not race_started:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            print("Exiting program...")
-            sys.exit()
-
-    # RENDERING
-    screen.fill(WHITE)
-    screen.blit(player_one.standing_images[player_one.current_standing_image],
-                (player_one.x_coordinate + current_position_p1, 250))
-
-    screen.blit(player_two.standing_images[player_two.current_standing_image],
-                (player_two.x_coordinate + current_position_p2, 450))
-    player_one.next_standing_image()
-    player_two.next_standing_image()
-
-    if ticks % 10 == 0:
-        print (race_countdown)
-        race_countdown -= 1
-
-    ticks -= 1
-    if race_countdown < 0:
-        race_started = True
-
-    clock.tick(10)
-
-    if race_countdown > 0:
-        text_surface = countdown_font.render(str(race_countdown), False, (0, 0, 0))
-    screen.blit(text_surface, (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
-    pygame.display.update()
 
 # main game loop
-print ("STARTING RACE")
+print("STARTING RACE")
 ticks = 0
 go_text = "GO"
 
-start_font = pygame.font.SysFont('Arial', 80)
+pygame.font.init()
+countdown_font = pygame.font.SysFont('Arial', 60)
+
+starting_line()
+
 
 while not have_winner:
     ticks += 1
