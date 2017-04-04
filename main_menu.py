@@ -1,4 +1,4 @@
-from Player import Player
+from player import Player
 import pygame
 import os
 
@@ -12,13 +12,11 @@ class MainMenu(object):
         # create our list of all possible players
         self.create_all_players()
 
-
     def menu_loop(self):
         self.display_menu()
         while True:
             self.get_inputs()
             # redraw
-
 
     def display_menu(self):
         print ("display_menu")
