@@ -1,4 +1,5 @@
 # TODO : Add a player Class. Include Images, Name, Position so we can sort list of players at end results.
+# TODO : Sliding. A slide at the end gives a boost to speed but if you don't make it you are boned.
 # TODO : Add win condition. Add end line.
 # TODO: Main Menu / Select Player
 # TODO : Starting image of character standing. Winning image ?
