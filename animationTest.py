@@ -151,11 +151,15 @@ while not have_winner:
                 have_p1_key_up = True
                 if last_input_p1 == Input.RIGHT:
                     speed_per_second_p1 += PIXEL_PER_TICK
+                else if last_input_p1 == Input.LEFT:
+                    speed_per_second_p1 += PIXEL_PER_TICK * .75
                 last_input_p1 = Input.LEFT
             elif event.key == pygame.K_RIGHT:
                 have_p1_key_up = True
                 if last_input_p1 == Input.LEFT:
                     speed_per_second_p1 += PIXEL_PER_TICK
+                else if last_input_p1 == Input.LEFT:
+                    speed_per_second_p1 += PIXEL_PER_TICK * .75
                 last_input_p1 = Input.RIGHT
 
             # Player 2 - A/D
@@ -163,11 +167,15 @@ while not have_winner:
                 have_p2_key_up = True
                 if last_input_p2 == Input.RIGHT:
                     speed_per_second_p2 += PIXEL_PER_TICK
+                if last_input_p2 == Input.LEFT:
+                    speed_per_second_p2 += PIXEL_PER_TICK * .75
                 last_input_p2 = Input.LEFT
             elif event.key == pygame.K_d:
                 have_p2_key_up = True
                 if last_input_p2 == Input.LEFT:
                     speed_per_second_p2 += PIXEL_PER_TICK
+                if last_input_p2 == Input.RIGHT:
+                    speed_per_second_p2 += PIXEL_PER_TICK * .75
                 last_input_p2 = Input.RIGHT
                 #print ("Speed_per_second : %s : %s" % (speed_per_second_p1, speed_per_second_p2))
 
