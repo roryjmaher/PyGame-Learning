@@ -11,6 +11,11 @@
 # TODO : Pick a character. Character Player stats. Top Speed/Stamina.
 # TODO : Improve Timing.
 
+#
+# NOTE: Main loop -> ( Menu -> Selct Type (race, Hurdles etc...) -> race.run()/hurdles.run() -> Results -> Menu)
+#
+
+
 import os
 import sys
 import pygame
