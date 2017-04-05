@@ -1,4 +1,4 @@
-from Input import Input
+from input import Input
 from controls import Controls
 import pygame
 
@@ -82,7 +82,7 @@ class Player(object):
         if self.is_ai:
             print ("AI: Auto calculate based on ai skill")
 
-    def input_handle_input(self, user_input):
+    def update(self, user_input):
         print ('Player State is %s' % self.state)
         print ('%s got input %s' % (self.player_number, user_input))
 

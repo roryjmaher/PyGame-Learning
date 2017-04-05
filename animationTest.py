@@ -1,4 +1,6 @@
+# TODO : Vectors for x/y
 # TODO : Switch current_position_p1 to use Player.x_coordinate
+
 # TODO : Allow Start with Left OR Right when Speed = NONE
 # TODO : Re-factor and allow 4 players
 # TODO : Sliding. A slide at the end gives a boost to speed but if you don't make it you are boned.
@@ -22,21 +24,10 @@ import sys
 import pygame
 
 from player import Player
-from Input import Input
+from input import Input
 import controls
+from settings import *
 
-#               R    G    B
-WHITE       = (255, 255, 255)
-GRAY        = (185, 185, 185)
-BLACK       = (  0,   0,   0)
-RED         = (155,   0,   0)
-LIGHTRED    = (175,  20,  20)
-GREEN       = (  0, 155,   0)
-LIGHTGREEN  = ( 20, 175,  20)
-BLUE        = (  0,   0, 155)
-LIGHTBLUE   = ( 20,  20, 175)
-YELLOW      = (155, 155,   0)
-LIGHTYELLOW = (175, 175,  20)
 
 
 def load_images_from_directory(path):
@@ -131,11 +122,9 @@ have_p1_key_up = False
 speed_per_second_p2 = 1
 have_p2_key_up = False
 
-FPS = 60
 
-# pixel spped ups and slowdown
-PIXEL_PER_TICK = 3
-PIXEL_SLOWDOWN = .5
+
+
 race_started = False
 have_winner = False
 
