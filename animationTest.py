@@ -1,5 +1,6 @@
 # TODO : Vectors for x/y
 # TODO : Switch current_position_p1 to use Player.x_coordinate
+# TODO : animation.py (Class Animation(self, directory)
 
 # TODO : Allow Start with Left OR Right when Speed = NONE
 # TODO : Re-factor and allow 4 players
