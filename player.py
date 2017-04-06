@@ -102,3 +102,5 @@ class Player(object):
                 print('handle input SELECT')
             else:
                 print ('%s got UNSUPPORTED input %s' % (self.player_number, user_input))
+        
+        # Update the Player State
