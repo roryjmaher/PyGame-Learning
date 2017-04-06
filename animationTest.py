@@ -34,12 +34,12 @@ def load_images_from_directory(path):
     scaled_images = []
     p1SpriteList = os.listdir(path)
     for image_string in p1SpriteList:
-        scaled_images.append(pygame.transform.scale2x(pygame.image.load(path + '/' + image_string).convert()))
+        scaled_images.append(pygame.transform.scale2x(pygame.image.load(path + '/' + image_string).convert_alpha()))
     return scaled_images
 
 
 def starting_line():
-    load_images_from_directory('./Assets/Images/Other/Countdown').convert()
+    load_images_from_directory('./Assets/Images/Other/Countdown')
     race_countdown = 5
     race_started = False
     ticks = 0
