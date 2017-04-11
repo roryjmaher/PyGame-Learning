@@ -1,5 +1,6 @@
 # TODO : Vectors for x/y
 # TODO : Switch current_position_p1 to use Player.x_coordinate
+# TODO : animation.py (Class Animation(self, directory)
 
 # TODO : Allow Start with Left OR Right when Speed = NONE
 # TODO : Re-factor and allow 4 players
@@ -34,7 +35,7 @@ def load_images_from_directory(path):
     scaled_images = []
     p1SpriteList = os.listdir(path)
     for image_string in p1SpriteList:
-        scaled_images.append(pygame.transform.scale2x(pygame.image.load(path + '/' + image_string)))
+        scaled_images.append(pygame.transform.scale2x(pygame.image.load(path + '/' + image_string).convert_alpha()))
     return scaled_images
 
 
