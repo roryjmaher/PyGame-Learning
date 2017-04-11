@@ -15,3 +15,6 @@ FPS = 60
 # pixel spped ups and slowdown
 PIXEL_PER_TICK = 3
 PIXEL_SLOWDOWN = .5
+
+PLAYER_ACC = 0.5
+PLAYER_FRICTION = -0.06

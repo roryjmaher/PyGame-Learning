@@ -56,7 +56,7 @@ def starting_line():
         # RENDERING
         screen.fill(WHITE)
         screen.blit(player_one.standing_images[player_one.current_standing_image],
-                    (player_one.x + current_position_p1, player_one.y))
+                    (player_one.pos))
 
         screen.blit(player_two.standing_images[player_two.current_standing_image],
                     (player_two.x + current_position_p2, player_two.y))
@@ -123,8 +123,6 @@ speed_per_second_p2 = 1
 have_p2_key_up = False
 
 
-
-
 race_started = False
 have_winner = False
 
@@ -162,19 +160,21 @@ while not have_winner:
             if event.key == pygame.K_LEFT:
                 have_p1_key_up = True
                 if last_input_p1 == Input.RIGHT:
-                    speed_per_second_p1 += PIXEL_PER_TICK
+                    #speed_per_second_p1 += PIXEL_PER_TICK
+                    player_one.acc.x += 1
                 elif last_input_p1 == Input.LEFT:
-                    speed_per_second_p1 += (PIXEL_PER_TICK * 0.95)
-
+                    #speed_per_second_p1 += (PIXEL_PER_TICK * 0.95)
+                    player_one.acc.x += 0.5
                 last_input_p1 = Input.LEFT
 
             elif event.key == pygame.K_RIGHT:
                 have_p1_key_up = True
                 if last_input_p1 == Input.LEFT:
-                    speed_per_second_p1 += PIXEL_PER_TICK
+                    #speed_per_second_p1 += PIXEL_PER_TICK
+                    player_one.acc.x += 1
                 elif last_input_p1 == Input.RIGHT:
-                    speed_per_second_p1 += (PIXEL_PER_TICK * 0.95)
-
+                    #speed_per_second_p1 += (PIXEL_PER_TICK * 0.95)
+                    player_one.acc.x += 0.5
                 last_input_p1 = Input.RIGHT
 
             print ('%s : %s' % (p1_inputs, speed_per_second_p1))
@@ -202,15 +202,17 @@ while not have_winner:
 
     # no key press so slow down
     if not have_p1_key_up:
-        speed_per_second_p1 -= PIXEL_SLOWDOWN
+        #speed_per_second_p1 -= PIXEL_SLOWDOWN
+        player_one.acc.x += -0.01
     if not have_p2_key_up:
-        speed_per_second_p2 -= PIXEL_SLOWDOWN
+        #speed_per_second_p2 -= PIXEL_SLOWDOWN
+        player_one.acc.x += -0.01
 
     # Keep velocity in check
-    if speed_per_second_p1 > 15:
-        speed_per_second_p1 = 15
-    if speed_per_second_p1 < 0:
-        speed_per_second_p1 = 0
+    if player_one.acc.x > 15:
+        player_one.acc.x = 15
+    if player_one.acc.x < 0:
+        player_one.acc.x = 0
 
     if speed_per_second_p2 > 15:
         speed_per_second_p2 = 15
@@ -224,7 +226,9 @@ while not have_winner:
     # print (time_tracker)
 
     # add velocity for this clock tick to current X position
-    current_position_p1 += speed_per_second_p1 / 2
+    #current_position_p1 += speed_per_second_p1 / 2
+    player_one.vel += player_one.acc
+    player_one.pos += player_one.vel + 0.5 * player_one.acc
     current_position_p2 += speed_per_second_p2 / 2
 
     if ticks >= FPS:
@@ -233,10 +237,11 @@ while not have_winner:
     # if we moved at all then get next sprite frame
     #if speed_per_second > 0:
     if ticks % 5 == 0:
-        if speed_per_second_p1 > 0:
-            player_one.current_running_image += 1
-            if player_one.current_running_image >= len(player_one.running_images):
-                player_one.current_running_image = 0
+        #if speed_per_second_p1 > 0:
+        # if player_one.vel > 0:
+        #     player_one.current_running_image += 1
+        #     if player_one.current_running_image >= len(player_one.running_images):
+        #         player_one.current_running_image = 0
         if speed_per_second_p2 > 0:
             player_two.current_running_image += 1
             if player_two.current_running_image >= len(player_two.running_images):
@@ -249,14 +254,14 @@ while not have_winner:
     screen.blit(text_surface, (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
 
     # TODO: see if we have a winner. See who actually won.
-    if current_position_p1 >= (WINDOW_WIDTH - 100):
+    if player_one.pos.x >= (WINDOW_WIDTH - 100):
         have_winner = True
     elif current_position_p2 >= (WINDOW_WIDTH - 100):
         have_winner = True
 
     # display new positions
     screen.blit(player_one.running_images[player_one.current_running_image],
-                (player_one.x + current_position_p1, player_one.y))
+                player_one.pos)
     screen.blit(player_two.running_images[player_two.current_running_image],
                 (player_one.x + current_position_p2, player_two.y))
     #print ("%s : %s" % (current_position_p1,current_position_p2))
